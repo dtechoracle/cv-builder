@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
-import * as jsPDF from "html2pdf.js";
+import * as html2pdf from "html2pdf.js";
 import Head from "next/head";
 
 export default function Home() {
+  const cvContentRef = useRef(null);
   const [formData, setFormData] = useState({
     firstName: "",
     role: "",
@@ -151,18 +152,14 @@ export default function Home() {
     });
   };
 
-  const CVDocument = ({ formData }) => {
-    const downloadPDF = () => {
-      const element = document.getElementById("cv-content");
+  const downloadPDF = () => {
+    const element = cvContentRef.current;
 
-      html2canvas(element).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, "PNG", 0, 0, 210, 297); // A4 size
-        pdf.save("your_cv.pdf");
-      });
-    };
+    if (element) {
+      html2pdf.from(element).outputPdf();
+    }
   };
+
   return (
     <>
       <div className="flex h-screen bg-gray-100">
@@ -540,7 +537,10 @@ export default function Home() {
           <div className="w-1/2 p-8 overflow-y-auto border-l border-gray-300">
             <h2 className="text-2xl font-bold mb-4">CV Preview</h2>
           </div>
-          <div className="bg-white h-[842px] p-6 rounded-lg shadow-lg">
+          <div
+            className="bg-white h-[842px] p-6 rounded-lg shadow-lg"
+            ref={cvContentRef}
+          >
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-3xl text-blue-700 font-bold mb-2">
