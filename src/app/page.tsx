@@ -1,7 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
-import * as html2pdf from "html2pdf.js";
+import html2pdf from "html2pdf.js";
+
+// import * as html2pdf from "html2pdf.js";
 import Head from "next/head";
 
 export default function Home() {
@@ -153,11 +155,9 @@ export default function Home() {
   };
 
   const downloadPDF = () => {
-    const element = cvContentRef.current;
+    const element = document.getElementById("cv-content");
 
-    if (element) {
-      html2pdf.from(element).outputPdf();
-    }
+    html2pdf().from(element).outputPdf();
   };
 
   return (
